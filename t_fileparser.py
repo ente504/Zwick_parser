@@ -1,5 +1,6 @@
 from PyQt5.QtCore import QThread, QFileSystemWatcher, pyqtSignal, pyqtSlot
 import os
+import time
 import logging
 
 
@@ -55,8 +56,26 @@ class FileParser(QThread):
             logging.info("a new file has been detected")
 
             if self.filename.endswith((".xlsx", ".xls")):
+
                 logging.info("the detected file is of type .xlsx or .xls")
                 self.file_location = self.directory_to_watch + "\\" + self.filename
+
+                # wait for the file to be copied completely
+                file_complete = False
+                file_size_0 = 0
+                file_size_1 = 0
+
+                while not file_complete:
+
+                    file_size_0 = os.path.getsize(self.file_location)
+                    time.sleep(0.5)
+                    file_size_1 = os.path.getsize(self.file_location)
+                    time.sleep(0.5)
+                    d = file_size_1 - file_size_0
+
+                    if d == 0:
+                        file_complete = True
+                # emit file path signal
                 self.File_Path_Signal.emit(self.file_location)
 
             # set actual dir to be the dir to compare to
