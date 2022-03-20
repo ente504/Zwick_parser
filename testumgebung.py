@@ -7,6 +7,7 @@ import time
 import json
 from datetime import datetime, timedelta
 from t_fileparser import FileParser
+from t_publishData import MqttPublisher
 from PyQt5.QtGui import QIcon, QPixmap
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import (
@@ -34,6 +35,13 @@ SpecimenNameList = ["sample_id", "station_id", "timestamp"]
 SpecimenDataList = [None, "Zwick", None]
 SpecimenDataFrame = [SpecimenNameList, SpecimenDataList]
 
+broker = "192.168.192.21"
+port = 1883
+username = "Detact"
+passkey = "Detact#1234"
+BaseTopic = "probekoerper"
+
+
 
 path = ""
 
@@ -46,7 +54,6 @@ def reset_SpecimenDataFrame():
 
     SpecimenDataFrame = []
     SpecimenDataFrame = [SpecimenNameList, SpecimenDataList]
-
 
 
 def process_excel_sheet(excel_path):
@@ -78,6 +85,13 @@ def process_excel_sheet(excel_path):
         # get reference Time for building timestamps
         start_time = datetime.now()
 
+        # init MQTT Client
+
+        MQTT_Client = MqttPublisher(SpecimenDataFrame[1][1] + "Publish", broker, port, username, passkey)
+        print("init of MQTT Client finished")
+        logging.info("init of MQTT Client finished")
+
+
         # start counting in line 2
         for line in range(2, len(df)):
 
@@ -94,11 +108,16 @@ def process_excel_sheet(excel_path):
 
                     if str(df.iloc[1, df.columns.get_loc(col)]) == "min":
 
-                        delta_t = delta_t / 60
+                        delta_t = delta_t/60
                         SpecimenDataFrame[1][2] = str(start_time + timedelta(days=0, seconds=delta_t))
 
             print(build_json(SpecimenDataFrame))
             # TODO: publish data on mqtt
+
+            if str(SpecimenDataFrame[1][0]) not in ["", " ", "none", "None", "False", "false"]:
+                MQTT_Client.publish(BaseTopic, build_json(SpecimenDataFrame))
+                print("published")
+            time.sleep(0.5)
 
             # shorten the SpecimenDataFrame so it can be overwritten in the next iteration
             SpecimenDataFrame[1] = SpecimenDataFrame[1][:-len(df.columns) or None]
@@ -140,6 +159,23 @@ def build_json(dataframe):
         logging.error("Error while transforming list into json String")
 
     return json_dump
+
+
+class PublishData(QThread):
+    """
+    Thread class for continuously publishing the updated specimenDataframe
+    to the MQTT Broker
+    """
+
+    @pyqtSlot()
+    def run(self):
+        self.Client = MqttPublisher(SpecimenDataFrame[1][1] + "Publish", broker, port, username, passkey)
+        print("init")
+
+        while True:
+            if str(SpecimenDataFrame[1][0]) not in ["", " ", "none", "None", "False", "false"]:
+                self.Client.publish(BaseTopic, build_json(SpecimenDataFrame))
+            time.sleep(Interval + 1)
 
 
 class Window(QMainWindow):
