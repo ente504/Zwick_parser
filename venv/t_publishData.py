@@ -32,7 +32,7 @@ class MqttPublisher:
 
         try:
             #setup mqtt client
-            self.mqtt_client = mqtt.Client(self.Client_Name)
+            self.mqtt_client = mqtt.Client(client_id=self.Client_Name, clean_session=True)
 
             if self.mqtt_Username not in ["", " ", None] or self.mqtt_Passkey not in ["", " ", None]:
                 self.mqtt_client.username_pw_set(self.mqtt_Username, self.mqtt_Passkey)
@@ -85,10 +85,14 @@ class MqttPublisher:
         """
 
         try:
-            self.mqtt_client.publish(topic, data)
+            self.mqtt_client.publish(topic, data, qos=0)
         except:
-            logging.error("Error while publishing to MQTT")
+            logging.info("somthing happend")
+
         return data
+
+    def reinit(self):
+        self.mqtt_client.reinitialise(client_id=self.Client_Name, clean_session=True)
 
 
 #class end
