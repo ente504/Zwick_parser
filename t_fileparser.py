@@ -1,3 +1,10 @@
+# !/usr/bin/env python3
+# -*- coding: utf-8 -*-
+# Zwick to Detact import Software
+# Revision: @ente504
+# 1.0: Initial version
+
+
 from PyQt5.QtCore import QThread, QFileSystemWatcher, pyqtSignal, pyqtSlot
 import os
 import time
