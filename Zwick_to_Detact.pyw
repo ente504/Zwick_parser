@@ -59,6 +59,9 @@ SpecimenDataFrame = [SpecimenNameList, SpecimenDataList]
 
 
 def reset_SpecimenDataFrame():
+    """
+    restores the virgin version of the SpecimenDataFrame
+    """
 
     global SpecimenDataFrame
 
