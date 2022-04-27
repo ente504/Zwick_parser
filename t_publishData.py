@@ -13,6 +13,7 @@ import random
 import configparser
 import shlex
 
+logging.basicConfig(filename='zwick.log', encoding='utf-8', level=logging.DEBUG)
 class MqttPublisher:
     def __init__(self, client_name, mqtt_broker, mqtt_port, mqtt_username, mqtt_passkey):
         """
@@ -34,10 +35,11 @@ class MqttPublisher:
             #setup mqtt client
             self.mqtt_client = mqtt.Client(client_id=self.Client_Name, clean_session=True)
 
-            if self.mqtt_Username not in ["", " ", None] or self.mqtt_Passkey not in ["", " ", None]:
+            if self.mqtt_Username not in ["", " ", None, "None", "none"] or self.mqtt_Passkey not in ["", " ", None, "None", "none"]:
                 self.mqtt_client.username_pw_set(self.mqtt_Username, self.mqtt_Passkey)
             else:
                 logging.info("the server is not using a User authentication")
+                print("the server is not using a User authentication")
 
             self.mqtt_client.on_connect = self.on_connect
             self.mqtt_client.on_publish = self.on_publish
