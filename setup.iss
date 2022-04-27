@@ -2,7 +2,7 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "Z to D Import Tool"
-#define MyAppVersion "1.0"
+#define MyAppVersion "1.1"
 #define MyAppPublisher "Enno Henn"
 #define MyAppURL "https://github.com/ente504/Zwick_parser"
 #define MyAppExeName "Z_to_D_Import_Tool.exe"
@@ -42,6 +42,7 @@ Source: "C:\Users\ennoh\Desktop\Zwick\config.ini"; DestDir: "{app}"; Flags: igno
 Source: "C:\Users\ennoh\Desktop\Zwick\t_fileparser.py"; DestDir: "{app}"; Flags: ignoreversion
 Source: "C:\Users\ennoh\Desktop\Zwick\t_publishData.py"; DestDir: "{app}"; Flags: ignoreversion
 Source: "C:\Users\ennoh\Desktop\Zwick\Z_to_D_Import_Tool.py"; DestDir: "{app}"; Flags: ignoreversion
+Source: "C:\Users\ennoh\Desktop\Zwick\readme.txt"; DestDir: "{app}"; Flags: ignoreversion
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Icons]
