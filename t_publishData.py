@@ -13,7 +13,6 @@ import random
 import configparser
 import shlex
 
-logging.basicConfig(filename='zwick.log', encoding='utf-8', level=logging.DEBUG)
 class MqttPublisher:
     def __init__(self, client_name, mqtt_broker, mqtt_port, mqtt_username, mqtt_passkey):
         """
