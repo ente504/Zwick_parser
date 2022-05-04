@@ -81,7 +81,20 @@ def process_excel_sheet(excel_path, excel_sheet):
     :param excel_path: Path there the Excel File is stored. Type: String
     :param excel_sheet: Number of the Excel Sheet witch contains the necessary non stationary Data Type: Integer
                         Starts at 0.
+                        0 "Parameter"
+                        1 "Ergebnisse"
+                        2 "Statistik"
+                        3 - n "probe n"
     """
+
+    # get the Sample_ID
+    df_id = pd.read_excel(excel_path, 1)
+    logging.info("Excel sheet " + excel_path + "has successfully imported as pandas Data Frame")
+
+    sample_id = str(df_id.iat[1, 1])
+    SpecimenDataFrame[1][0] = str(df_id.iat[1, 1])
+    print(sample_id)
+    # automatically read collum Values
 
     """
     read the non stationary data
@@ -90,9 +103,6 @@ def process_excel_sheet(excel_path, excel_sheet):
     df = pd.read_excel(excel_path, excel_sheet)
     logging.info("Excel sheet " + excel_path + "has successfully imported as pandas Data Frame")
 
-    sample_id = str(df.columns[0])
-    SpecimenDataFrame[1][0] = str(df.columns[0])
-    # automatically read collum Values
 
     for col in df.columns:
         # get channels and ad the corresponding unit to the Name
